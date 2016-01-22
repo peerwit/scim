@@ -1,0 +1,14 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Users page
+GET     /users                      controllers.Application.getUsers
+GET     /users/:uid                 controllers.Application.getUser(uid: String)
+POST    /users                      controllers.Application.postUsers
+PUT     /users/:uid                 controllers.Application.putUsers(uid: String)
+DELETE  /users/:uid                 controllers.Application.delUsers(uid: String)
+
+# Groups page
+GET     /groups                     controllers.Application.getGroups
+PATCH   /groups/:uid                controllers.Application.patchGroups(uid: String)
