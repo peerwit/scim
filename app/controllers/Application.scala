@@ -48,12 +48,22 @@ object Application extends Controller{
     )(GroupRequest.apply)(GroupRequest.unapply)
   )
 
-  def getUsers = DBAction { implicit rs =>
-    val allEmails = emails.list.groupBy(_.name).mapValues(x => x.map(_.address))
-    val userViews = users.list.map { u =>
-      UserView(u.name, u.nickname, allEmails.getOrElse(u.name, List()))
+  def getUsers(email: Option[String]) = DBAction { implicit rs =>
+    val userViews  =
+      if (email.isDefined) {
+        (for {
+          (e, u) <- emails filter (_.address === email.get) join users on (_.name === _.name)
+        } yield (e, u)).list.groupBy(_._2).toList.map { x =>
+            UserView(x._1.name, x._1.nickname, x._2.map(_._1.address))
+        }
+    } else {
+      val allEmails = emails.list.groupBy(_.name).mapValues(x => x.map(_.address))
+      users.list.map { u =>
+        UserView(u.name, u.nickname, allEmails.getOrElse(u.name, List()))
+      }
     }
     Ok(Json.toJson(userViews))
+
   }
 
   def getUser(uid: String) = DBAction { implicit rs =>

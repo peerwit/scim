@@ -3,7 +3,7 @@
 # ~~~~
 
 # Users page
-GET     /users                      controllers.Application.getUsers
+GET     /users                      controllers.Application.getUsers(email: Option[String])
 GET     /users/:uid                 controllers.Application.getUser(uid: String)
 POST    /users                      controllers.Application.postUsers
 PUT     /users/:uid                 controllers.Application.putUsers(uid: String)
